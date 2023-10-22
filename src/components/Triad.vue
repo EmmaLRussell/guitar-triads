@@ -9,7 +9,7 @@
         </p>    
     </div>
     <div>
-        <button @click="store.newTriad()">Generate a new triad!</button>
+        <button @click="store.newTriad()" class="">Generate a new triad!</button>
         <div class="triad-details strong" v-if="store.triad">
             <div>
                 Chord: {{ displayNote }} {{ displayChordType }} 
@@ -20,6 +20,10 @@
             <div>
                 Bass string: {{ displayBassString }}
             </div> 
+            <button @click="store.showNotes()" class="btn-answer">Show me how to play this thing!</button>
+            <div class="triad-details" v-if="store.notes.length && store.displayNotes">
+                {{ triadNotes }}
+            </div>    
         </div>
     </div>    
 </template>
@@ -27,18 +31,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useTriadStore } from '@/stores/triadStore';
-import { Note, ChordType, Inversion, BassString, getNoteAsSharp } from "../types";
+import { ChordType, Inversion, BassString, GuitarString, getNoteAsSharp, adjustTriadForRoot } from "../types";
+import { getDisplayNote } from "../utils";
+import { storeToRefs } from "pinia";
     const store = useTriadStore();
     
     const displayChordType = computed(() => ChordType[store.triad!!.chordType]);
     const displayNote = computed(() => {
-        const enumNote = store.triad!!.note;
-        if (store.triad!!.chordType === ChordType.Minor) {
-            return getNoteAsSharp(enumNote);
-        } else {
-            return Note[enumNote];
-        }
+        return getDisplayNote(store.triad!!.note, store.triad!!.chordType);
     });
     const displayInversion = computed(() => Inversion[store.triad!!.inversion]);
     const displayBassString = computed(() => BassString[store.triad!!.bassString]);
+    const triadNotes = computed(() => {
+        const root = getDisplayNote(store.triad!!.note, store.triad!!.chordType);
+        const adjustedNotes = adjustTriadForRoot(root, store.third!!, store.fifth!!);
+        const adjustedNotesMapping = {
+            [store.triad!!.note]: adjustedNotes[0],
+            [store.third!!]: adjustedNotes[1],
+            [store.fifth!!]: adjustedNotes[2]
+        };
+        return store.notes!!.map((note, idx) => `${adjustedNotesMapping[note]} (fret ${store.frets[idx]} on ${GuitarString[store.strings[idx]]})`).join(", ");
+    });
 </script>

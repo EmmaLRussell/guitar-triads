@@ -13,6 +13,8 @@ export enum Note {
     G = 11
 }
 
+export const maxNoteIndex = Note.G as number;
+
 function randomWhole(max: number) {
     return Math.floor(Math.random() * (max + 1));
   }
@@ -32,11 +34,20 @@ export const randomChordType = () => {
     return randomWhole(ChordType.Augmented as number) as ChordType;
 }
 
-export enum BassString {
+export enum GuitarString {
     E = 0,
     A = 1,
     D = 2,
-    G = 3
+    G = 3,
+    B = 4,
+    EHigh = 5
+}
+
+export enum BassString {
+    E = GuitarString.E,
+    A = GuitarString.A,
+    D = GuitarString.D,
+    G = GuitarString.G
 }
 
 export const randomBassString = () => {
@@ -76,3 +87,60 @@ export const getNoteAsSharp = (note: Note) => {
             return Note[note];           
     }
 }
+
+export const noteLetters = ["A", "B", "C", "D", "E", "F", "G"];
+
+export const noteAliases = {
+    [Note.Ab]: ["G#"],
+    [Note.A]: ["G##", "Bbb"],
+    [Note.Bb]: ["A#"],
+    [Note.B]: ["A##", "Cb"],
+    [Note.C]: ["B#", "Dbb"],
+    [Note.Db]: ["C#"],
+    [Note.D]: ["C##", "Ebb"],
+    [Note.Eb]: ["D#"],
+    [Note.E]: ["D##", "Fb"],
+    [Note.F]: ["E#", "Gbb"],
+    [Note.Gb]: ["F#"],
+    [Note.G]: ["F##", "Abb"]
+};
+
+// TODO: There's a bug with how this is called, it's using 1st, second, third notes rather than root, third fifth
+// Need to get both from the store...
+export const adjustTriadForRoot = (root: string, third: Note, fifth: Note) => {
+    const rootLetter = Array.from(root)[0];
+    console.log(`root letter is ${rootLetter}`)
+    const rootIdx = noteLetters.indexOf(rootLetter);
+    const thirdNoteLetter = noteLetters[(rootIdx + 2) % (noteLetters.length)];
+    console.log(`3rd letter is ${thirdNoteLetter}`)
+    const fifthNoteLetter = noteLetters[(rootIdx + 4) % (noteLetters.length)];
+    console.log(`5th note letter is ${fifthNoteLetter}`);
+    let thirdString = Note[third];
+    console.log(`thirdString is ${thirdString}`)
+    let fifthString = Note[fifth];
+    console.log(`fifthString is ${fifthString}`)
+    if (thirdNoteLetter !== Array.from(thirdString)[0]) {
+        thirdString = noteAliases[third].find((s) => Array.from(s)[0] == thirdNoteLetter);
+    }
+    if (fifthNoteLetter !== Array.from(fifthString)[0]) {
+        fifthString = noteAliases[fifth].find((s) => Array.from(s)[0] == fifthNoteLetter);
+    }
+    return [root, thirdString, fifthString];
+};
+
+export const stringAsNote = (string: GuitarString): Note => {
+    switch (string) {
+        case GuitarString.E:
+            return Note.E;
+        case GuitarString.A:
+            return Note.A;
+        case GuitarString.D:
+            return Note.D;
+        case GuitarString.G:
+            return Note.G;
+        case GuitarString.B:
+            return Note.B;
+        case GuitarString.EHigh:
+            return Note.E;
+    };    
+};
