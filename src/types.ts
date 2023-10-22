@@ -105,25 +105,18 @@ export const noteAliases = {
     [Note.G]: ["F##", "Abb"]
 };
 
-// TODO: There's a bug with how this is called, it's using 1st, second, third notes rather than root, third fifth
-// Need to get both from the store...
 export const adjustTriadForRoot = (root: string, third: Note, fifth: Note) => {
     const rootLetter = Array.from(root)[0];
-    console.log(`root letter is ${rootLetter}`)
     const rootIdx = noteLetters.indexOf(rootLetter);
     const thirdNoteLetter = noteLetters[(rootIdx + 2) % (noteLetters.length)];
-    console.log(`3rd letter is ${thirdNoteLetter}`)
     const fifthNoteLetter = noteLetters[(rootIdx + 4) % (noteLetters.length)];
-    console.log(`5th note letter is ${fifthNoteLetter}`);
-    let thirdString = Note[third];
-    console.log(`thirdString is ${thirdString}`)
-    let fifthString = Note[fifth];
-    console.log(`fifthString is ${fifthString}`)
+    let thirdString: string | undefined = Note[third];
+    let fifthString: string | undefined = Note[fifth];
     if (thirdNoteLetter !== Array.from(thirdString)[0]) {
-        thirdString = noteAliases[third].find((s) => Array.from(s)[0] == thirdNoteLetter);
+        thirdString = noteAliases[third]!!.find((s) => Array.from(s)[0] == thirdNoteLetter)!!;
     }
     if (fifthNoteLetter !== Array.from(fifthString)[0]) {
-        fifthString = noteAliases[fifth].find((s) => Array.from(s)[0] == fifthNoteLetter);
+        fifthString = noteAliases[fifth]!!.find((s) => Array.from(s)[0] == fifthNoteLetter)!!;
     }
     return [root, thirdString, fifthString];
 };
