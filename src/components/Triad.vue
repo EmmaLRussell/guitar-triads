@@ -21,9 +21,12 @@
                 Bass string: {{ displayBassString }}
             </div> 
             <button @click="store.showNotes()" class="btn-answer">Show me how to play this thing!</button>
-            <div class="triad-details" v-if="store.notes.length && store.displayNotes">
-                {{ triadNotes }}
-            </div>    
+            <template v-if="store.notes.length && store.displayNotes">
+                <div class="triad-details">
+                    {{ triadNotes }}
+                </div>
+                <TriadDiagram></TriadDiagram>   
+            </template> 
         </div>
     </div>    
 </template>
@@ -33,6 +36,7 @@ import { computed } from "vue";
 import { useTriadStore } from '@/stores/triadStore';
 import { ChordType, Inversion, BassString, GuitarString, getNoteAsSharp, adjustTriadForRoot } from "../types";
 import { getDisplayNote } from "../utils";
+import TriadDiagram from "./TriadDiagram.vue";
 import { storeToRefs } from "pinia";
     const store = useTriadStore();
     

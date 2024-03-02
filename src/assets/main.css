@@ -29,6 +29,7 @@ a,
 
 .triad-details {
   margin-top: 2rem;
+  margin-bottom: 2rem;
   font-size: larger;
 }
 
@@ -39,6 +40,24 @@ a,
 .image-credit {
   margin-top: 3rem;
   font-size: small;
+}
+
+table.fretboard {
+  margin: auto;
+}
+
+td.fret {
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;
+  width: 2rem;
+}
+
+td.fret-0 {
+  border-right-width: 4px;
+  border-right-color: gray;
+  border-right-style: solid;
+  width: 2rem;
 }
 
 @media (hover: hover) {

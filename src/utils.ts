@@ -1,5 +1,5 @@
-import { Note, ChordType, Inversion, BassString, GuitarString, getNoteAsSharp, maxNoteIndex, stringAsNote } from "./types";
-
+import { Note, ChordType, Inversion, BassString, GuitarString, getNoteAsSharp, maxNoteIndex, stringAsNote, adjustTriadForRoot } from "./types";
+import type { Triad } from "./types";
 
 export const chordTypeIntervals = {
     [ChordType.Major]: [4, 3],
@@ -40,6 +40,16 @@ export const noteFretOnString = (note: Note, string: GuitarString) => {
         interval += (maxNoteIndex + 1);
     }
     return interval;
+};
+
+export const getAdjustedNoteMappings = (triad: Triad, third: Note, fifth: Note) => {
+    const root = getDisplayNote(triad.note, triad.chordType);
+    const adjustedNotes = adjustTriadForRoot(root, third, fifth);
+    return {
+        [triad!!.note]: adjustedNotes[0],
+        [third!!]: adjustedNotes[1],
+        [fifth!!]: adjustedNotes[2]
+    };
 };
 
 
